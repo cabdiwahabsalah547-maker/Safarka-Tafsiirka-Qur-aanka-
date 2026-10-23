@@ -3,157 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Imtixaanka Jimcaha - Safarka Tafsiirka Qur'aanka</title>
-    <!-- Tailwind CSS -->
+    <title>Imtixaanka - Safarka Tafsiirka Qur'aanka</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans min-h-screen flex flex-col">
 
-    <!-- Header -->
     <nav class="bg-emerald-800 text-white p-4 shadow-lg">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-lg font-bold">Safarka Tafsiirka Qur'aanka</h1>
-            <a href="index.html" class="text-sm bg-emerald-700 px-3 py-1 rounded hover:bg-emerald-600">&larr; Bogga Hore</a>
+            <h1 class="text-lg font-bold">Imtixaanka Jimcaha</h1>
+            <a href="index.html" class="text-xs bg-emerald-700 px-3 py-1.5 rounded">&larr; Bogga Hore</a>
         </div>
     </nav>
 
-    <!-- Main Container -->
-    <div class="container mx-auto px-4 py-8 flex-grow max-w-2xl">
+    <div class="container mx-auto px-4 py-8 flex-grow max-w-xl">
 
-        <!-- Header Title -->
-        <div class="text-center mb-8">
-            <h2 class="text-3xl font-extrabold text-emerald-800">Imtixaanka Jimcaha</h2>
-            <p class="text-sm text-gray-600 mt-1">U fadhiiso imtixaanka furan ama xaqiiji imtixaankii hore ee aad gashay.</p>
-        </div>
-
-        <!-- Foomka Loginka Imtixaanka -->
-        <div id="loginCard" class="bg-white p-6 rounded-xl shadow-md border border-gray-200 mb-6">
-            <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Soo Galitaanka Imtixaanka</h3>
-            <form onsubmit="event.preventDefault(); startExam();" class="space-y-4">
+        <!-- LOG IN FORM FOR EXAM -->
+        <div id="examLoginCard" class="bg-white p-6 rounded-xl shadow border mb-6">
+            <h3 class="text-lg font-bold text-emerald-900 mb-4 border-b pb-2">Soo Galitaanka Imtixaanka</h3>
+            <form onsubmit="event.preventDefault(); processExamLogin();" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Magaca oo Dhammaystiran</label>
-                    <input type="text" id="examName" required placeholder="Geli magacaaga" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    <label class="block text-xs font-semibold mb-1">Magacaaga oo Dhammaystiran</label>
+                    <input type="text" id="exStudentName" required placeholder="Geli magacaaga" class="w-full px-3 py-2 border rounded text-sm">
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Student Code</label>
-                        <input type="text" id="examCode" required placeholder="STQ-101" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Nambarka WhatsApp-ka</label>
-                        <input type="tel" id="examPhone" required placeholder="+25261XXXXXXX" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                    </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">Student Code</label>
+                    <input type="text" id="exStudentCode" required placeholder="Tusaale: STQ001" class="w-full px-3 py-2 border rounded text-sm uppercase">
                 </div>
-
-                <div class="flex gap-3 pt-2">
-                    <button type="submit" class="flex-1 bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 px-4 rounded-lg shadow transition">
-                        Gal Imtixaanka Cusub
-                    </button>
-                    <button type="button" onclick="checkPastExam();" class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2.5 px-4 rounded-lg shadow transition">
-                        Hubi Imtixaankii Hore
-                    </button>
+                <div class="flex gap-2">
+                    <button type="button" onclick="handleGalImtixaan();" class="flex-1 bg-emerald-800 text-white font-bold py-2 rounded text-xs shadow">1. Gal Imtixaanka</button>
+                    <button type="button" onclick="handleHubiImtixaan();" class="flex-1 bg-yellow-500 text-gray-900 font-bold py-2 rounded text-xs shadow">2. Hubi Imtixaanka</button>
                 </div>
             </form>
         </div>
 
-        <!-- Result Card: Hubinta Imtixaankii Hore -->
-        <div id="pastExamCard" class="hidden bg-white p-6 rounded-xl shadow-md border border-yellow-300 mb-6">
-            <div class="flex justify-between items-center mb-4 border-b pb-2">
-                <h3 class="text-lg font-bold text-gray-800">Natiijada Imtixaankii Hore</h3>
-                <span class="bg-green-100 text-green-800 text-xs font-bold px-2.5 py-1 rounded">La Saxay</span>
-            </div>
-            <div class="space-y-2 text-sm">
-                <p><span class="text-gray-500">Ardayga:</span> <strong id="pastName">---</strong></p>
-                <p><span class="text-gray-500">Student Code:</span> <strong id="pastCode">---</strong></p>
-                <p><span class="text-gray-500">Taariikhda Imtixaanka:</span> <strong>Jimce, 2026</strong></p>
-                <div class="mt-4 p-4 bg-emerald-50 rounded-lg text-center border border-emerald-200">
-                    <span class="text-gray-600 text-xs block">Buundada Aad Keentay</span>
-                    <span class="text-3xl font-extrabold text-emerald-800">92 / 100</span>
-                </div>
-            </div>
+        <!-- POPUP: MA JIRO IMTIXAAN CUSUB -->
+        <div id="noExamMsg" class="hidden bg-red-50 border-2 border-red-400 text-red-800 p-6 rounded-xl text-center">
+            <h4 class="text-lg font-bold mb-1">⚠️ Ogeysiis Imtixaan</h4>
+            <p class="text-sm">Imtixaan cusub ma yaalo xilligan. Fadlan la xiriir maamulka ama dib usoo noqo xilli kale.</p>
         </div>
 
-        <!-- Main Exam Section (Marka uu ardaygu galo imtixaanka) -->
-        <div id="examFormCard" class="hidden bg-white p-6 rounded-xl shadow-lg border border-emerald-300">
-            <div class="bg-emerald-50 p-4 rounded-lg mb-6 border border-emerald-200 flex justify-between items-center">
-                <div>
-                    <h4 class="font-bold text-emerald-900" id="currentStudent">---</h4>
-                    <span class="text-xs text-gray-600">Code: <span id="currentCode">---</span></span>
-                </div>
-                <span class="bg-red-100 text-red-800 text-xs font-bold px-3 py-1 rounded-full animate-pulse">Imtixaanku Wuu Furan Yahay</span>
-            </div>
-
-            <form onsubmit="event.preventDefault(); submitExam();" class="space-y-6">
-                <!-- Su'aasha 1-aad (Doorasho) -->
-                <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                    <p class="font-semibold text-gray-800 mb-3">1. Su'aal: Waa maxay macnaha guud ee Suratu Al-Fatiha?</p>
-                    <div class="space-y-2 text-sm">
-                        <label class="flex items-center space-x-2 p-2 rounded hover:bg-white border">
-                            <input type="radio" name="q1" value="A" required class="text-emerald-600">
-                            <span>A) Ummul Kitaab (Hooyada Kitaabka)</span>
-                        </label>
-                        <label class="flex items-center space-x-2 p-2 rounded hover:bg-white border">
-                            <input type="radio" name="q1" value="B" class="text-emerald-600">
-                            <span>B) Surad ka sheekaysa dagaallada</span>
-                        </label>
-                        <label class="flex items-center space-x-2 p-2 rounded hover:bg-white border">
-                            <input type="radio" name="q1" value="C" class="text-emerald-600">
-                            <span>C) Surad ka kooban 100 aayadood</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Su'aasha 2-aad (Qoraal / Essay) -->
-                <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                    <p class="font-semibold text-gray-800 mb-3">2. Su'aal: Qoor faa'iidada ugu weyn ee aad ka baratay casharkii Tafsiirka ee toddobaadkan?</p>
-                    <textarea rows="3" required placeholder="Halkan ku qor jawaabtaada..." class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none text-sm"></textarea>
-                </div>
-
-                <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 rounded-lg shadow-md transition">
-                    Dhiib Imtixaanka (Submit Exam)
-                </button>
+        <!-- EXAM FORM (MARKA UIL IMTIXAAN YALLO) -->
+        <div id="activeExamContainer" class="hidden bg-white p-6 rounded-xl shadow border">
+            <h3 class="text-xl font-bold text-emerald-900 mb-2" id="examTitleHeading">Imtixaanka Tafsiirka</h3>
+            <form id="studentExamForm" onsubmit="event.preventDefault(); submitStudentExam();" class="space-y-6">
+                <div id="questionsContainer" class="space-y-4"></div>
+                <button type="submit" class="w-full bg-emerald-800 text-white font-bold py-3 rounded-lg shadow">Dhiib Imtixaanka (Submit)</button>
             </form>
+        </div>
+
+        <!-- HUBI IMTIXAANKA (NATIIJADA IYO SU'AALAHA SAXDA/KHALADKA) -->
+        <div id="reviewExamCard" class="hidden bg-white p-6 rounded-xl shadow border space-y-4">
+            <h3 class="text-lg font-bold text-emerald-900 border-b pb-2">Natiijada Imtixaankii Hore</h3>
+            <div id="reviewDetails" class="space-y-3"></div>
         </div>
 
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white text-center py-4 text-xs">
-        <p>&copy; 2026 Safarka Tafsiirka Qur'aanka Kariimka.</p>
-    </footer>
-
-    <!-- JavaScript code -->
     <script>
-        function startExam() {
-            const name = document.getElementById('examName').value;
-            const code = document.getElementById('examCode').value;
+        function handleGalImtixaan() {
+            const name = document.getElementById('exStudentName').value;
+            const code = document.getElementById('exStudentCode').value.toUpperCase();
 
-            document.getElementById('currentStudent').innerText = name;
-            document.getElementById('currentCode').innerText = code.toUpperCase();
+            if(!name || !code) return alert("Fadlan geli magaca iyo student code-ka!");
 
-            document.getElementById('pastExamCard').classList.add('hidden');
-            document.getElementById('examFormCard').classList.remove('hidden');
+            const activeExam = JSON.parse(localStorage.getItem('activeExam'));
+            if(!activeExam || !activeExam.isOpen) {
+                document.getElementById('noExamMsg').classList.remove('hidden');
+                document.getElementById('activeExamContainer').classList.add('hidden');
+                document.getElementById('reviewExamCard').classList.add('hidden');
+            } else {
+                document.getElementById('noExamMsg').classList.add('hidden');
+                document.getElementById('reviewExamCard').classList.add('hidden');
+                renderExamForm(activeExam);
+            }
         }
 
-        function checkPastExam() {
-            const name = document.getElementById('examName').value;
-            const code = document.getElementById('examCode').value;
+        function renderExamForm(exam) {
+            document.getElementById('examTitleHeading').innerText = exam.title;
+            const qBox = document.getElementById('questionsContainer');
+            qBox.innerHTML = '';
 
-            if(!name || !code) {
-                alert("Fadlan geli magacaaga iyo student code-ka marka hore!");
+            exam.questions.forEach((q, idx) => {
+                let html = `<div class="p-4 bg-gray-50 border rounded-lg"><p class="font-bold text-sm mb-2">${idx+1}. ${q.text}</p>`;
+                if(q.type === 'mcq') {
+                    q.options.forEach((opt, oIdx) => {
+                        html += `<label class="flex items-center gap-2 mb-1 text-xs"><input type="radio" name="q_${idx}" value="${opt}" required> <span>${opt}</span></label>`;
+                    });
+                } else {
+                    html += `<textarea name="q_${idx}" required placeholder="Halkan ku qor jawaabtaada..." class="w-full p-2 border rounded text-xs"></textarea>`;
+                }
+                html += `</div>`;
+                qBox.innerHTML += html;
+            });
+
+            document.getElementById('activeExamContainer').classList.remove('hidden');
+        }
+
+        function submitStudentExam() {
+            const code = document.getElementById('exStudentCode').value.toUpperCase();
+            const activeExam = JSON.parse(localStorage.getItem('activeExam'));
+            let submissions = JSON.parse(localStorage.getItem('examSubmissions') || '[]');
+
+            let score = 0;
+            let total = activeExam.questions.length;
+            let answers = [];
+
+            activeExam.questions.forEach((q, idx) => {
+                let userAns = "";
+                if(q.type === 'mcq') {
+                    const el = document.querySelector(`input[name="q_${idx}"]:checked`);
+                    userAns = el ? el.value : "";
+                    if(userAns === q.correct) score++;
+                } else {
+                    const el = document.querySelector(`textarea[name="q_${idx}"]`);
+                    userAns = el ? el.value : "";
+                }
+                answers.push({ question: q.text, userAns, correctAns: q.correct, type: q.type });
+            });
+
+            const submission = {
+                code,
+                examTitle: activeExam.title,
+                gradingType: activeExam.gradingType,
+                answers,
+                autoScore: score,
+                totalQuestions: total,
+                status: activeExam.gradingType === 'auto' ? 'La Saxay' : 'Wuxuu sugayaa saxid'
+            };
+
+            submissions.push(submission);
+            localStorage.setItem('examSubmissions', JSON.stringify(submissions));
+
+            alert("Imtixaankaagii si guul leh ayaa loo dhiibay!");
+            location.reload();
+        }
+
+        function handleHubiImtixaan() {
+            const code = document.getElementById('exStudentCode').value.toUpperCase();
+            const submissions = JSON.parse(localStorage.getItem('examSubmissions') || '[]');
+            const sub = submissions.find(s => s.code === code);
+
+            if(!sub) {
+                alert("Ma jiro imtixaan aad gashay ama la saxay oo la helay!");
                 return;
             }
 
-            document.getElementById('pastName').innerText = name;
-            document.getElementById('pastCode').innerText = code.toUpperCase();
+            document.getElementById('noExamMsg').classList.add('hidden');
+            document.getElementById('activeExamContainer').classList.add('hidden');
 
-            document.getElementById('examFormCard').classList.add('hidden');
-            document.getElementById('pastExamCard').classList.remove('hidden');
-        }
+            const revBox = document.getElementById('reviewDetails');
+            revBox.innerHTML = `
+                <div class="bg-emerald-50 p-3 rounded text-center border">
+                    <p class="text-xs text-gray-500">Xaaladda Natiijada:</p>
+                    <strong class="text-emerald-900">${sub.status}</strong>
+                </div>
+            `;
 
-        function submitExam() {
-            alert("Imtixaankaagii si guul leh ayaa loo dhiibay! Natiijada waxaa loo gudbiyay maamulka.");
-            location.reload();
+            sub.answers.forEach((a, i) => {
+                let isRight = a.userAns === a.correctAns;
+                revBox.innerHTML += `
+                    <div class="p-3 border rounded text-xs ${a.type === 'mcq' ? (isRight ? 'bg-green-50 border-green-300' : 'bg-red-50 border-red-300') : 'bg-gray-50'}">
+                        <p class="font-bold mb-1">${i+1}. ${a.question}</p>
+                        <p class="text-gray-700">Jawaabtaada: <strong>${a.userAns}</strong></p>
+                        ${a.type === 'mcq' ? `<p class="text-gray-500 mt-1">Jawaabta Saxda ah: <span class="text-green-700 font-bold">${a.correctAns}</span></p>` : ''}
+                    </div>
+                `;
+            });
+
+            document.getElementById('reviewExamCard').classList.remove('hidden');
         }
     </script>
 </body>
