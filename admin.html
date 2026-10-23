@@ -3,216 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Qeybta Maamulka - Safarka Tafsiirka Qur'aanka</title>
-    <!-- Tailwind CSS -->
+    <title>Qeybta Maamulka - Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans min-h-screen flex flex-col">
 
-    <!-- Header -->
     <nav class="bg-emerald-900 text-white p-4 shadow-lg">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-lg font-bold flex items-center gap-2">
-                🔒 Dashboard-ka Maamulka
-            </h1>
-            <div id="navRight">
-                <a href="index.html" class="text-xs bg-emerald-800 px-3 py-1.5 rounded hover:bg-emerald-700">&larr; Bogga Hore</a>
-            </div>
+            <h1 class="text-lg font-bold">🔒 Dashboard-ka Maamulka</h1>
+            <a href="index.html" class="text-xs bg-emerald-800 px-3 py-1.5 rounded">&larr; Bogga Hore</a>
         </div>
     </nav>
 
-    <!-- SECTION 1: LOGIN FORM (Muuqanaya marka hore) -->
-    <div id="loginSection" class="container mx-auto px-4 py-16 flex-grow max-w-md">
-        <div class="bg-white p-6 rounded-xl shadow-xl border border-gray-200">
-            <h2 class="text-2xl font-bold text-center text-emerald-900 mb-2">Soo Galitaanka Maamulka</h2>
-            <p class="text-xs text-gray-500 text-center mb-6">Geli magacaaga iyo password-ka maamulaha</p>
-
-            <form onsubmit="event.preventDefault(); handleLogin();" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Username / Magaca</label>
-                    <input type="text" id="adminUser" required placeholder="admin" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Password</label>
-                    <input type="password" id="adminPass" required placeholder="••••••••" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                </div>
-                <button type="submit" class="w-full bg-emerald-800 hover:bg-emerald-900 text-white font-bold py-2.5 rounded-lg shadow transition">
-                    Soo Gal Dashboard-ka
-                </button>
+    <!-- LOGIN SECTION -->
+    <div id="adminLoginSection" class="container mx-auto px-4 py-16 max-w-md">
+        <div class="bg-white p-6 rounded-xl shadow border">
+            <h2 class="text-xl font-bold text-center text-emerald-900 mb-4">Gali Maamulka</h2>
+            <form onsubmit="event.preventDefault(); adminLogin();" class="space-y-3">
+                <input type="text" id="admUser" placeholder="Username" required class="w-full px-3 py-2 border rounded text-sm">
+                <input type="password" id="admPass" placeholder="Password" required class="w-full px-3 py-2 border rounded text-sm">
+                <button type="submit" class="w-full bg-emerald-900 text-white font-bold py-2 rounded text-sm">Soo Gal</button>
             </form>
         </div>
     </div>
 
-    <!-- SECTION 2: ADMIN DASHBOARD (Soo baxaya marka maamulahu galo) -->
-    <div id="dashboardSection" class="hidden container mx-auto px-4 py-8 flex-grow max-w-5xl">
+    <!-- MAIN DASHBOARD PANEL -->
+    <div id="adminPanel" class="hidden container mx-auto px-4 py-8 max-w-4xl space-y-6">
 
-        <!-- Top Welcome Bar -->
-        <div class="bg-white p-4 rounded-xl shadow mb-6 flex justify-between items-center flex-wrap gap-3">
+        <!-- TABS -->
+        <div class="flex gap-2 overflow-x-auto pb-2 text-xs font-bold">
+            <button onclick="openTab('studentsListTab')" class="bg-emerald-800 text-white px-4 py-2 rounded">👨‍🎓 Ardayda Diiwaangashan</button>
+            <button onclick="openTab('createExamTab')" class="bg-emerald-800 text-white px-4 py-2 rounded">📝 Imtixaan Gali (Nidaamka Cusub)</button>
+            <button onclick="openTab('gradeExamTab')" class="bg-emerald-800 text-white px-4 py-2 rounded">✍️ Sax Imtixaanka</button>
+            <button onclick="openTab('settingsTab')" class="bg-emerald-800 text-white px-4 py-2 rounded">🎨 Midabada & External Exam</button>
+        </div>
+
+        <!-- TAB 1: ARDAYDA DIIWAANGASHAN -->
+        <div id="studentsListTab" class="tab-box bg-white p-6 rounded-xl shadow border">
+            <h3 class="font-bold text-emerald-900 mb-4 border-b pb-2">Liiska Ardayda Is-diiwaangelisay</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-xs text-left border">
+                    <thead class="bg-gray-100 border-b">
+                        <tr>
+                            <th class="p-2 border">Code</th>
+                            <th class="p-2 border">Magaca</th>
+                            <th class="p-2 border">WhatsApp</th>
+                            <th class="p-2 border">Jinsiga</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 2: IMTIXAAN GALI (CREATE EXAM) -->
+        <div id="createExamTab" class="tab-box hidden bg-white p-6 rounded-xl shadow border space-y-4">
+            <h3 class="font-bold text-emerald-900 border-b pb-2">Abuur Imtixaan Cusub</h3>
             <div>
-                <h2 class="text-xl font-bold text-emerald-900">Ku Soo Dhawoow Dashboard-ka</h2>
-                <p class="text-xs text-gray-500">Safarka Tafsiirka Qur'aanka Kariimka</p>
+                <label class="block text-xs font-semibold mb-1">Cawaanka Imtixaanka</label>
+                <input type="text" id="newExamTitle" placeholder="Tusaale: Imtixaanka Jimcaha Suratu Al-Baqarah" class="w-full px-3 py-2 border rounded text-sm">
             </div>
-            <button onclick="logout();" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3 py-2 rounded">
-                Ka Bax (Logout)
-            </button>
-        </div>
-
-        <!-- Navigation Tabs -->
-        <div class="flex gap-2 overflow-x-auto pb-3 mb-6 text-xs font-bold">
-            <button onclick="showTab('teamTab')" class="tab-btn bg-emerald-800 text-white px-4 py-2 rounded-lg shadow">⚙️ Xogta Team-ka</button>
-            <button onclick="showTab('studentsTab')" class="tab-btn bg-white text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-lg shadow">👨‍🎓 Ardayda</button>
-            <button onclick="showTab('examTab')" class="tab-btn bg-white text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-lg shadow">📝 Imtixaanadka</button>
-            <button onclick="showTab('certTab')" class="tab-btn bg-white text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-lg shadow">📜 Shahaadooyinka</button>
-        </div>
-
-        <!-- TAB 1: BADALIDA XOGTA TEAM-KA -->
-        <div id="teamTab" class="tab-content bg-white p-6 rounded-xl shadow border">
-            <h3 class="text-lg font-bold text-emerald-900 border-b pb-2 mb-4">Badalida Magaca ama Sawirka Team-ka</h3>
-            <form onsubmit="event.preventDefault(); alert('Xogta kooxda waa la cusbooneysiiyay!');" class="space-y-4 max-w-lg">
-                <div>
-                    <label class="block text-sm font-semibold mb-1">Magaca Kooxda / Group-ka</label>
-                    <input type="text" value="Safarka Tafsiirka Qur'aanka Kariimka" class="w-full px-3 py-2 border rounded-lg text-sm">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold mb-1">Sawirka/Logo-da Kooxda (Upload)</label>
-                    <input type="file" accept="image/*" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
-                </div>
-                <button type="submit" class="bg-emerald-800 text-white font-bold text-xs px-4 py-2 rounded-lg shadow">Kaydi Baddalida</button>
-            </form>
-        </div>
-
-        <!-- TAB 2: DIIWAANGELINTA & BADDALIDA ARDAYDA -->
-        <div id="studentsTab" class="tab-content hidden bg-white p-6 rounded-xl shadow border">
-            <h3 class="text-lg font-bold text-emerald-900 border-b pb-2 mb-4">Diiwaangelinta / Baddalida Ardayda</h3>
+            <div>
+                <label class="block text-xs font-semibold mb-1">Nidaamka Saxida (Grading Type)</label>
+                <select id="newExamGrading" class="w-full px-3 py-2 border rounded text-sm">
+                    <option value="auto">Automatic (Circle / Multiple Choice - Ardaygu arki maayo jawaabta marka uu shaqeynayo)</option>
+                    <option value="manual">Qoraal (In aan anigu gacanta ka saxo jawaabaha ardayga)</option>
+                </select>
+            </div>
             
-            <!-- Foomka Arday Cusub -->
-            <form onsubmit="event.preventDefault(); alert('Arday cusub waa la diiwaangeliyay!');" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 bg-gray-50 p-4 rounded-lg border">
-                <div>
-                    <label class="block text-xs font-semibold mb-1">Magaca Ardayga</label>
-                    <input type="text" required placeholder="Magaca oo dhammaystiran" class="w-full px-3 py-1.5 border rounded text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold mb-1">Student Code</label>
-                    <input type="text" required placeholder="STQ-102" class="w-full px-3 py-1.5 border rounded text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold mb-1">Nambarka WhatsApp</label>
-                    <input type="tel" required placeholder="+25261XXXXXXX" class="w-full px-3 py-1.5 border rounded text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold mb-1">Jinsiga</label>
-                    <select class="w-full px-3 py-1.5 border rounded text-sm">
-                        <option>Lab</option>
-                        <option>Dheddig</option>
-                    </select>
-                </div>
-                <div class="md:col-span-2">
-                    <button type="submit" class="bg-emerald-800 text-white font-bold text-xs px-4 py-2 rounded shadow">Ku Dar Arday Cusub</button>
-                </div>
-            </form>
-        </div>
+            <div class="border-t pt-3">
+                <h4 class="font-bold text-xs mb-2">Su'aalaha Imtixaanka</h4>
+                <div id="addedQuestionsBox" class="space-y-2 mb-3"></div>
 
-        <!-- TAB 3: MAAREYNTA IMTIXAANKA -->
-        <div id="examTab" class="tab-content hidden bg-white p-6 rounded-xl shadow border">
-            <h3 class="text-lg font-bold text-emerald-900 border-b pb-2 mb-4">Maareynta Imtixaanadka Jimcaha</h3>
-            
-            <div class="space-y-6">
-                <!-- Furida / Xirida -->
-                <div class="flex items-center justify-between p-4 bg-emerald-50 rounded-lg border border-emerald-200">
-                    <div>
-                        <h4 class="font-bold text-sm text-emerald-900">Xaaladda Imtixaanka Jimcaha</h4>
-                        <p class="text-xs text-gray-500">Awood u siii ardayda inay galaan ama ka xir imtixaanka</p>
+                <div class="bg-gray-50 p-3 border rounded space-y-2">
+                    <input type="text" id="qText" placeholder="Qor su'aasha oo dhameystiran..." class="w-full px-3 py-1.5 border rounded text-xs">
+                    <div class="flex gap-2">
+                        <select id="qType" class="px-2 py-1 border rounded text-xs">
+                            <option value="mcq">Circle / Dooro A,B,C</option>
+                            <option value="essay">Qoraal Banaan</option>
+                        </select>
+                        <input type="text" id="qOptions" placeholder="Option-nada (Kula kala saar comma e.g: A, B, C)" class="w-full px-2 py-1 border rounded text-xs">
+                        <input type="text" id="qCorrect" placeholder="Jawaabta Saxda ah" class="w-full px-2 py-1 border rounded text-xs">
                     </div>
-                    <button id="toggleExamBtn" onclick="toggleExam();" class="bg-green-600 text-white font-bold text-xs px-4 py-2 rounded-full">
-                        🟢 WUU FURAN YAHAY (Guji si aad u xirto)
-                    </button>
-                </div>
-
-                <!-- Natiijada & Saxida -->
-                <div class="border-t pt-4">
-                    <h4 class="font-bold text-sm text-gray-800 mb-3">Fasaxda & Saxida Natiijada</h4>
-                    <div class="flex gap-3">
-                        <button onclick="alert('Natiijada imtixaanka waa loo fasaxay dhammaan ardayda!');" class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold text-xs px-4 py-2 rounded shadow">
-                            📢 Fasax Natiijada (Publish Results)
-                        </button>
-                    </div>
+                    <button type="button" onclick="addQuestionToExam();" class="bg-blue-600 text-white font-bold px-3 py-1 rounded text-xs">+ Ku Dar Su'aasha</button>
                 </div>
             </div>
+
+            <button onclick="publishExam();" class="w-full bg-emerald-800 text-white font-bold py-2 rounded text-sm shadow">Fasax / Fur Imtixaanka</button>
         </div>
 
-        <!-- TAB 4: DIIWAANGELINTA SHAHAADADA -->
-        <div id="certTab" class="tab-content hidden bg-white p-6 rounded-xl shadow border">
-            <h3 class="text-lg font-bold text-emerald-900 border-b pb-2 mb-4">Diiwaangelinta Shahaadada Cusub</h3>
+        <!-- TAB 3: SAX IMTIXAANKA (GRADE PENDING EXAMS) -->
+        <div id="gradeExamTab" class="tab-box hidden bg-white p-6 rounded-xl shadow border">
+            <h3 class="font-bold text-emerald-900 mb-4 border-b pb-2">Imtixanaadka Yaalo oo Saxid U Baahan</h3>
+            <div id="pendingExamsList" class="space-y-3 text-xs"></div>
+        </div>
+
+        <!-- TAB 4: EXTERNAL EXAM & COLORS -->
+        <div id="settingsTab" class="tab-box hidden bg-white p-6 rounded-xl shadow border space-y-4">
+            <h3 class="font-bold text-emerald-900 border-b pb-2">Badalida Midabada & Qeybta Link/PDF/Excel</h3>
             
-            <form onsubmit="event.preventDefault(); alert('Shahaadada cusub si guul leh ayaa loo diiwaangeliyay!');" class="space-y-4 max-w-lg">
-                <div>
-                    <label class="block text-xs font-semibold mb-1">Magaca Ardayga Shahaadada Leh</label>
-                    <input type="text" required placeholder="Magaca oo dhammaystiran" class="w-full px-3 py-2 border rounded text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold mb-1">Certificate Code (QR Code ID)</label>
-                    <input type="text" required placeholder="STQ-2026-99" class="w-full px-3 py-2 border rounded text-sm uppercase">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold mb-1">Darajada (Grade)</label>
-                    <select class="w-full px-3 py-2 border rounded text-sm">
-                        <option>Mumtaaz (A+)</option>
-                        <option>Very Good (B+)</option>
-                        <option>Good (C)</option>
-                    </select>
-                </div>
-                <button type="submit" class="bg-emerald-800 text-white font-bold text-xs px-4 py-2 rounded shadow">Diiwaangeli Shahaadada</button>
-            </form>
+            <div>
+                <label class="block text-xs font-semibold mb-1">Midabka Website-ka</label>
+                <select id="colorSelect" class="w-full px-3 py-1.5 border rounded text-xs">
+                    <option value="emerald">Cagaar (Emerald - Default)</option>
+                    <option value="blue">Blue (Kbuluug)</option>
+                    <option value="purple">Purple (Sogal)</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold mb-1">Warbixinta Bogga Hore (Description)</label>
+                <textarea id="descInput" rows="2" class="w-full px-3 py-1.5 border rounded text-xs" placeholder="Qor warbixin cusub..."></textarea>
+            </div>
+
+            <div class="border-t pt-3">
+                <h4 class="font-bold text-xs mb-2">Soo Galinta Imtixaan External ah (Link / PDF / Excel)</h4>
+                <input type="url" placeholder="Geli Link-ga Imtixaanka Google Form / PDF / Link" class="w-full px-3 py-1.5 border rounded text-xs mb-2">
+                <p class="text-[10px] text-gray-500">Waad ku dari kartaa link-ga imtixaanka banaanka laga soo galiyo si ardaydu toos ugu fariistaan.</p>
+            </div>
+
+            <button onclick="saveSiteSettings();" class="bg-emerald-800 text-white font-bold text-xs px-4 py-2 rounded">Kaydi Baddalida</button>
         </div>
 
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white text-center py-4 text-xs mt-auto">
-        <p>&copy; 2026 Safarka Tafsiirka Qur'aanka Kariimka - Admin Dashboard</p>
-    </footer>
-
-    <!-- JavaScript -->
     <script>
-        function handleLogin() {
-            const u = document.getElementById('adminUser').value;
-            const p = document.getElementById('adminPass').value;
-
-            // Login tusaale ah
+        function adminLogin() {
+            const u = document.getElementById('admUser').value;
+            const p = document.getElementById('admPass').value;
             if(u === 'admin' && p === '1234') {
-                document.getElementById('loginSection').classList.add('hidden');
-                document.getElementById('dashboardSection').classList.remove('hidden');
+                document.getElementById('adminLoginSection').classList.add('hidden');
+                document.getElementById('adminPanel').classList.remove('hidden');
+                loadStudentsTable();
             } else {
-                alert("Username ama Password-ka waa xaqiijin la'aan! (Tusaale: Username: admin | Pass: 1234)");
+                alert("Username ama Password xaqiijin la'aan!");
             }
         }
 
-        function logout() {
-            document.getElementById('dashboardSection').classList.add('hidden');
-            document.getElementById('loginSection').classList.remove('hidden');
-        }
-
-        function showTab(tabId) {
-            // Qari dhammaan tab-yada
-            const tabs = document.querySelectorAll('.tab-content');
-            tabs.forEach(tab => tab.classList.add('hidden'));
-
-            // Soo saar kan la doortay
+        function openTab(tabId) {
+            document.querySelectorAll('.tab-box').forEach(el => el.classList.add('hidden'));
             document.getElementById(tabId).classList.remove('hidden');
         }
 
-        let examOpen = true;
-        function toggleExam() {
-            const btn = document.getElementById('toggleExamBtn');
-            if(examOpen) {
-                btn.innerText = "🔴 WUU XIRAN YAHAY (Guji si aad u furto)";
-                btn.className = "bg-red-600 text-white font-bold text-xs px-4 py-2 rounded-full";
-                examOpen = false;
-            } else {
-                btn.innerText = "🟢 WUU FURAN YAHAY (Guji si aad u xirto)";
-                btn.className = "bg-green-600 text-white font-bold text-xs px-4 py-2 rounded-full";
-                examOpen = true;
-            }
+        function loadStudentsTable() {
+            const students = JSON.parse(localStorage.getItem('registeredStudents') || '[]');
+            const tbody = document.getElementById('studentTableBody');
+            tbody.innerHTML = '';
+            students.forEach(s => {
+                tbody.innerHTML += `<tr><td class="p-2 border font-bold">${s.code}</td><td class="p-2 border">${s.name}</td><td class="p-2 border">${s.phone}</td><td class="p-2 border">${s.gender}</td></tr>`;
+            });
+        }
+
+        let currentQuestions = [];
+        function addQuestionToExam() {
+            const text = document.getElementById('qText').value;
+            const type = document.getElementById('qType').value;
+            const options = document.getElementById('qOptions').value.split(',').map(s=>s.trim());
+            const correct = document.getElementById('qCorrect').value;
+
+            currentQuestions.push({ text, type, options, correct });
+            document.getElementById('addedQuestionsBox').innerHTML += `<p class="text-xs bg-gray-100 p-1 rounded border">✔ ${text}</p>`;
+            document.getElementById('qText').value = '';
+        }
+
+        function publishExam() {
+            const title = document.getElementById('newExamTitle').value;
+            const gradingType = document.getElementById('newExamGrading').value;
+
+            const examData = {
+                title,
+                gradingType,
+                questions: currentQuestions,
+                isOpen: true
+            };
+
+            localStorage.setItem('activeExam', JSON.stringify(examData));
+            alert("Imtixaanka cusub waa la fasaxay oo wuu furan yahay!");
+        }
+
+        function saveSiteSettings() {
+            const color = document.getElementById('colorSelect').value;
+            const desc = document.getElementById('descInput').value;
+
+            localStorage.setItem('siteColor', color);
+            localStorage.setItem('siteDesc', desc);
+
+            alert("Baddalida website-ka waa la kaydiyay!");
         }
     </script>
 </body>
