@@ -3,149 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hubinta Shahaadada - Safarka Tafsiirka Qur'aanka</title>
-    <!-- Tailwind CSS -->
+    <title>Hubinta Shahaadada</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- HTML5 QR Code Library oo lagu scan-gareeyo QR Code-ka -->
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans min-h-screen flex flex-col">
 
-    <!-- Header -->
     <nav class="bg-emerald-800 text-white p-4 shadow-lg">
         <div class="container mx-auto flex justify-between items-center">
             <h1 class="text-lg font-bold">Safarka Tafsiirka Qur'aanka</h1>
-            <a href="index.html" class="text-sm bg-emerald-700 px-3 py-1 rounded hover:bg-emerald-600">&larr; Bogga Hore</a>
+            <a href="index.html" class="text-xs bg-emerald-700 px-3 py-1.5 rounded">&larr; Bogga Hore</a>
         </div>
     </nav>
 
-    <!-- Main Container -->
-    <div class="container mx-auto px-4 py-8 flex-grow max-w-xl">
-
-        <!-- Title -->
-        <div class="text-center mb-8">
-            <h2 class="text-3xl font-extrabold text-emerald-800">Hubinta Shahaadada</h2>
-            <p class="text-sm text-gray-600 mt-1">Xaqiiji saxnimada shahaadada adoo isticmaalaya Code-ka ama QR Code-ka.</p>
+    <div class="container mx-auto px-4 py-8 flex-grow max-w-md text-center">
+        <h2 class="text-2xl font-bold text-emerald-900 mb-4">Hubinta Shahaadada</h2>
+        <div class="bg-white p-6 rounded-xl shadow border space-y-4">
+            <input type="text" id="certSearch" placeholder="Geli Certificate Code-ka" class="w-full px-3 py-2 border rounded text-sm uppercase">
+            <button onclick="checkCert();" class="w-full bg-emerald-800 text-white font-bold py-2 rounded text-sm">Hubi Shahaadada</button>
         </div>
 
-        <!-- Form-ka Raadinta Shahaadada -->
-        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 mb-6">
-            <form onsubmit="event.preventDefault(); verifyCert();" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Geli Certificate Code-ka</label>
-                    <input type="text" id="certCodeInput" required placeholder="Tusaale: STQ-2026-88" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none uppercase">
-                </div>
-                
-                <div class="flex gap-3">
-                    <button type="submit" class="flex-1 bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 px-4 rounded-lg shadow transition">
-                        Hubi Shahaadada
-                    </button>
-                    <button type="button" onclick="toggleScanner();" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-lg shadow transition flex items-center justify-center gap-1">
-                        📷 Scan QR
-                    </button>
-                </div>
-            </form>
-
-            <!-- Qeybta QR Code Scanner-ka Mobaylka -->
-            <div id="reader-container" class="hidden mt-4 p-3 bg-gray-50 border rounded-lg">
-                <div id="reader" class="w-full"></div>
-                <p class="text-xs text-center text-gray-500 mt-2">U dhiib kamarada QR Code-ka shahaadada</p>
-            </div>
+        <div id="certCard" class="hidden mt-6 bg-white p-6 rounded-xl shadow-xl border-4 border-yellow-500">
+            <span class="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded">✅ SHAHAADO SHAQAYNASA</span>
+            <h3 class="text-xl font-bold text-emerald-900 mt-3">Safarka Tafsiirka Qur'aanka</h3>
+            <p class="text-xs text-gray-500 my-2">Waxaa la siiyay ardayga:</p>
+            <h4 id="certNameDisplay" class="text-xl font-bold text-gray-900 underline">---</h4>
+            <p class="text-xs text-gray-600 mt-2">Darajada: <strong class="text-emerald-800">Mumtaaz (A+)</strong></p>
         </div>
-
-        <!-- Shahaadada Soo Baxaysa (Certificate Card) -->
-        <div id="certResult" class="hidden bg-white p-6 rounded-xl shadow-xl border-4 border-yellow-500 relative text-center">
-            
-            <!-- Badge Verification -->
-            <div class="inline-block bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full mb-4 border border-green-300">
-                ✅ SHAHAADO SHAQAYNASA (OFFICIAL)
-            </div>
-
-            <!-- Content-ka Shahaadada -->
-            <h3 class="text-2xl font-serif font-bold text-emerald-900 border-b border-yellow-400 pb-2 mb-4">
-                Safarka Tafsiirka Qur'aanka Kariimka
-            </h3>
-
-            <p class="text-xs text-gray-500 italic mb-2">Shahaadadani waxay caddaynaysaa in ardayga lagu magacaabo:</p>
-            
-            <h4 id="certName" class="text-2xl font-bold text-gray-900 my-2 underline decoration-yellow-500">
-                ---
-            </h4>
-
-            <p class="text-xs text-gray-600 max-w-sm mx-auto my-3">
-                Uu/Eey si guul leh u dhameystay/dhameysatay Koorsada Tafsiirka Qur'aanka Kariimka oo lagu baranayay Maaddada Tafsiirka iyo Axkaamta.
-            </p>
-
-            <div class="grid grid-cols-2 gap-2 text-xs border-t border-b py-3 my-4 bg-yellow-50/50">
-                <div>
-                    <span class="text-gray-500 block">Certificate Code:</span>
-                    <strong id="certCodeDisplay" class="text-emerald-800">---</strong>
-                </div>
-                <div>
-                    <span class="text-gray-500 block">Darajada (Grade):</span>
-                    <strong class="text-emerald-800">Mumtaaz (A+)</strong>
-                </div>
-                <div>
-                    <span class="text-gray-500 block">Taariikhda Bixinta:</span>
-                    <strong class="text-gray-700">2026</strong>
-                </div>
-                <div>
-                    <span class="text-gray-500 block">Xaaladda:</span>
-                    <strong class="text-green-700">Lagu Kalsoonaan Karo</strong>
-                </div>
-            </div>
-
-            <!-- Signature & Stamp Section -->
-            <div class="flex justify-between items-center mt-6 pt-2 text-xs">
-                <div>
-                    <div class="w-16 h-16 rounded-full border-2 border-yellow-500 bg-emerald-800 text-white flex items-center justify-center font-bold text-[10px] mx-auto opacity-80">
-                        STQ STAMP
-                    </div>
-                </div>
-                <div class="text-right">
-                    <p class="font-bold text-gray-800 border-t border-gray-400 pt-1">Maamulka Kooxda</p>
-                    <p class="text-[10px] text-gray-500">Safarka Tafsiirka Qur'aanka</p>
-                </div>
-            </div>
-        </div>
-
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white text-center py-4 text-xs">
-        <p>&copy; 2026 Safarka Tafsiirka Qur'aanka Kariimka.</p>
-    </footer>
-
-    <!-- JavaScript -->
     <script>
-        let html5QrcodeScanner;
-
-        function verifyCert() {
-            const code = document.getElementById('certCodeInput').value;
-            
-            // Xog tusaale ah
-            document.getElementById('certName').innerText = "Cabdiraxmaan Axmed Cali";
-            document.getElementById('certCodeDisplay').innerText = code.toUpperCase();
-            
-            document.getElementById('certResult').classList.remove('hidden');
-        }
-
-        function toggleScanner() {
-            const container = document.getElementById('reader-container');
-            if (container.classList.contains('hidden')) {
-                container.classList.remove('hidden');
-                
-                html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
-                html5QrcodeScanner.render((decodedText) => {
-                    document.getElementById('certCodeInput').value = decodedText;
-                    html5QrcodeScanner.clear();
-                    container.classList.add('hidden');
-                    verifyCert();
-                });
-            } else {
-                container.classList.add('hidden');
-                if(html5QrcodeScanner) html5QrcodeScanner.clear();
-            }
+        function checkCert() {
+            document.getElementById('certNameDisplay').innerText = "Cabdiraxmaan Axmed Cali";
+            document.getElementById('certCard').classList.remove('hidden');
         }
     </script>
 </body>
