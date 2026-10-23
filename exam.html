@@ -20,7 +20,7 @@
         <!-- LOG IN FORM FOR EXAM -->
         <div id="examLoginCard" class="bg-white p-6 rounded-xl shadow border mb-6">
             <h3 class="text-lg font-bold text-emerald-900 mb-4 border-b pb-2">Soo Galitaanka Imtixaanka</h3>
-            <form onsubmit="event.preventDefault(); processExamLogin();" class="space-y-4">
+            <form onsubmit="event.preventDefault();" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold mb-1">Magacaaga oo Dhammaystiran</label>
                     <input type="text" id="exStudentName" required placeholder="Geli magacaaga" class="w-full px-3 py-2 border rounded text-sm">
@@ -30,8 +30,8 @@
                     <input type="text" id="exStudentCode" required placeholder="Tusaale: STQ001" class="w-full px-3 py-2 border rounded text-sm uppercase">
                 </div>
                 <div class="flex gap-2">
-                    <button type="button" onclick="handleGalImtixaan();" class="flex-1 bg-emerald-800 text-white font-bold py-2 rounded text-xs shadow">1. Gal Imtixaanka</button>
-                    <button type="button" onclick="handleHubiImtixaan();" class="flex-1 bg-yellow-500 text-gray-900 font-bold py-2 rounded text-xs shadow">2. Hubi Imtixaanka</button>
+                    <button type="button" onclick="handleGalImtixaan();" class="flex-1 bg-emerald-800 hover:bg-emerald-900 text-white font-bold py-2.5 rounded text-xs shadow transition">1. Gal Imtixaanka</button>
+                    <button type="button" onclick="handleHubiImtixaan();" class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2.5 rounded text-xs shadow transition">2. Hubi Imtixaanka</button>
                 </div>
             </form>
         </div>
@@ -42,16 +42,18 @@
             <p class="text-sm">Imtixaan cusub ma yaalo xilligan. Fadlan la xiriir maamulka ama dib usoo noqo xilli kale.</p>
         </div>
 
-        <!-- EXAM FORM (MARKA UIL IMTIXAAN YALLO) -->
+        <!-- EXAM FORM (MARKA UU IMTIXAAN YAALLO) -->
         <div id="activeExamContainer" class="hidden bg-white p-6 rounded-xl shadow border">
-            <h3 class="text-xl font-bold text-emerald-900 mb-2" id="examTitleHeading">Imtixaanka Tafsiirka</h3>
+            <h3 class="text-xl font-bold text-emerald-900 mb-4 border-b pb-2" id="examTitleHeading">Imtixaanka Tafsiirka</h3>
             <form id="studentExamForm" onsubmit="event.preventDefault(); submitStudentExam();" class="space-y-6">
                 <div id="questionsContainer" class="space-y-4"></div>
-                <button type="submit" class="w-full bg-emerald-800 text-white font-bold py-3 rounded-lg shadow">Dhiib Imtixaanka (Submit)</button>
+                <button type="submit" class="w-full bg-emerald-800 text-white font-bold py-3 rounded-lg shadow hover:bg-emerald-900 transition">
+                    Dhiib Imtixaanka (Submit)
+                </button>
             </form>
         </div>
 
-        <!-- HUBI IMTIXAANKA (NATIIJADA IYO SU'AALAHA SAXDA/KHALADKA) -->
+        <!-- HUBI IMTIXAANKA -->
         <div id="reviewExamCard" class="hidden bg-white p-6 rounded-xl shadow border space-y-4">
             <h3 class="text-lg font-bold text-emerald-900 border-b pb-2">Natiijada Imtixaankii Hore</h3>
             <div id="reviewDetails" class="space-y-3"></div>
@@ -61,8 +63,8 @@
 
     <script>
         function handleGalImtixaan() {
-            const name = document.getElementById('exStudentName').value;
-            const code = document.getElementById('exStudentCode').value.toUpperCase();
+            const name = document.getElementById('exStudentName').value.trim();
+            const code = document.getElementById('exStudentCode').value.trim().toUpperCase();
 
             if(!name || !code) return alert("Fadlan geli magaca iyo student code-ka!");
 
@@ -84,14 +86,24 @@
             qBox.innerHTML = '';
 
             exam.questions.forEach((q, idx) => {
-                let html = `<div class="p-4 bg-gray-50 border rounded-lg"><p class="font-bold text-sm mb-2">${idx+1}. ${q.text}</p>`;
+                let html = `<div class="p-4 bg-gray-50 border rounded-lg"><p class="font-bold text-sm mb-3">${idx+1}. ${q.text}</p>`;
+                
                 if(q.type === 'mcq') {
+                    html += `<div class="space-y-2">`;
                     q.options.forEach((opt, oIdx) => {
-                        html += `<label class="flex items-center gap-2 mb-1 text-xs"><input type="radio" name="q_${idx}" value="${opt}" required> <span>${opt}</span></label>`;
+                        const labelChar = String.fromCharCode(65 + oIdx); // A, B, C, D
+                        html += `
+                            <label class="flex items-center gap-3 p-2 bg-white border rounded-lg hover:bg-emerald-50 cursor-pointer text-xs">
+                                <input type="radio" name="q_${idx}" value="${opt}" required class="w-4 h-4 text-emerald-600 focus:ring-emerald-500"> 
+                                <span><strong class="text-emerald-900">${labelChar}:</strong> ${opt}</span>
+                            </label>
+                        `;
                     });
+                    html += `</div>`;
                 } else {
-                    html += `<textarea name="q_${idx}" required placeholder="Halkan ku qor jawaabtaada..." class="w-full p-2 border rounded text-xs"></textarea>`;
+                    html += `<textarea name="q_${idx}" required placeholder="Halkan ku qor jawaabtaada..." class="w-full p-2 border rounded text-xs bg-white"></textarea>`;
                 }
+                
                 html += `</div>`;
                 qBox.innerHTML += html;
             });
@@ -100,7 +112,7 @@
         }
 
         function submitStudentExam() {
-            const code = document.getElementById('exStudentCode').value.toUpperCase();
+            const code = document.getElementById('exStudentCode').value.trim().toUpperCase();
             const activeExam = JSON.parse(localStorage.getItem('activeExam'));
             let submissions = JSON.parse(localStorage.getItem('examSubmissions') || '[]');
 
@@ -113,7 +125,9 @@
                 if(q.type === 'mcq') {
                     const el = document.querySelector(`input[name="q_${idx}"]:checked`);
                     userAns = el ? el.value : "";
-                    if(userAns === q.correct) score++;
+                    if(userAns.trim().toLowerCase() === q.correct.trim().toLowerCase()) {
+                        score++;
+                    }
                 } else {
                     const el = document.querySelector(`textarea[name="q_${idx}"]`);
                     userAns = el ? el.value : "";
@@ -134,12 +148,12 @@
             submissions.push(submission);
             localStorage.setItem('examSubmissions', JSON.stringify(submissions));
 
-            alert("Imtixaankaagii si guul leh ayaa loo dhiibay!");
+            alert("🎉 Imtixaankaagii si guul leh ayaa loo dhiibay!");
             location.reload();
         }
 
         function handleHubiImtixaan() {
-            const code = document.getElementById('exStudentCode').value.toUpperCase();
+            const code = document.getElementById('exStudentCode').value.trim().toUpperCase();
             const submissions = JSON.parse(localStorage.getItem('examSubmissions') || '[]');
             const sub = submissions.find(s => s.code === code);
 
@@ -153,19 +167,20 @@
 
             const revBox = document.getElementById('reviewDetails');
             revBox.innerHTML = `
-                <div class="bg-emerald-50 p-3 rounded text-center border">
-                    <p class="text-xs text-gray-500">Xaaladda Natiijada:</p>
-                    <strong class="text-emerald-900">${sub.status}</strong>
+                <div class="bg-emerald-50 p-4 rounded-lg text-center border border-emerald-200">
+                    <p class="text-xs text-gray-500 mb-1">Xaaladda Natiijada:</p>
+                    <strong class="text-emerald-900 text-sm block mb-1">${sub.status}</strong>
+                    <p class="text-xs font-bold text-gray-700">Darajada: ${sub.autoScore} / ${sub.totalQuestions}</p>
                 </div>
             `;
 
             sub.answers.forEach((a, i) => {
-                let isRight = a.userAns === a.correctAns;
+                let isRight = a.userAns.trim().toLowerCase() === a.correctAns.trim().toLowerCase();
                 revBox.innerHTML += `
-                    <div class="p-3 border rounded text-xs ${a.type === 'mcq' ? (isRight ? 'bg-green-50 border-green-300' : 'bg-red-50 border-red-300') : 'bg-gray-50'}">
+                    <div class="p-3 border rounded-lg text-xs ${a.type === 'mcq' ? (isRight ? 'bg-green-50 border-green-300' : 'bg-red-50 border-red-300') : 'bg-gray-50'}">
                         <p class="font-bold mb-1">${i+1}. ${a.question}</p>
                         <p class="text-gray-700">Jawaabtaada: <strong>${a.userAns}</strong></p>
-                        ${a.type === 'mcq' ? `<p class="text-gray-500 mt-1">Jawaabta Saxda ah: <span class="text-green-700 font-bold">${a.correctAns}</span></p>` : ''}
+                        ${a.type === 'mcq' ? `<p class="text-gray-600 mt-1">Jawaabta Saxda ah: <span class="text-green-700 font-bold">${a.correctAns}</span></p>` : ''}
                     </div>
                 `;
             });
