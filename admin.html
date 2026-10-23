@@ -33,9 +33,9 @@
         <!-- TABS -->
         <div class="flex gap-2 overflow-x-auto pb-2 text-xs font-bold">
             <button onclick="openTab('studentsListTab')" class="bg-emerald-800 text-white px-4 py-2 rounded">👨‍🎓 Ardayda Diiwaangashan</button>
-            <button onclick="openTab('createExamTab')" class="bg-emerald-800 text-white px-4 py-2 rounded">📝 Imtixaan Gali (Nidaamka Cusub)</button>
-            <button onclick="openTab('gradeExamTab')" class="bg-emerald-800 text-white px-4 py-2 rounded">✍️ Sax Imtixaanka</button>
-            <button onclick="openTab('settingsTab')" class="bg-emerald-800 text-white px-4 py-2 rounded">🎨 Midabada & External Exam</button>
+            <button onclick="openTab('createExamTab')" class="bg-emerald-800 text-white px-4 py-2 rounded">📝 Imtixaan Gali</button>
+            <button onclick="openTab('gradeExamTab')" class="bg-emerald-800 text-white px-4 py-2 rounded">✍️ Natiijooyinka Imtixaanka</button>
+            <button onclick="openTab('settingsTab')" class="bg-emerald-800 text-white px-4 py-2 rounded">🎨 Baddal Midabka & Settings</button>
         </div>
 
         <!-- TAB 1: ARDAYDA DIIWAANGASHAN -->
@@ -56,72 +56,100 @@
             </div>
         </div>
 
-        <!-- TAB 2: IMTIXAAN GALI (CREATE EXAM) -->
+        <!-- TAB 2: IMTIXAAN GALI (CREATE EXAM WITH 4 OPTIONS) -->
         <div id="createExamTab" class="tab-box hidden bg-white p-6 rounded-xl shadow border space-y-4">
             <h3 class="font-bold text-emerald-900 border-b pb-2">Abuur Imtixaan Cusub</h3>
             <div>
-                <label class="block text-xs font-semibold mb-1">Cawaanka Imtixaanka</label>
-                <input type="text" id="newExamTitle" placeholder="Tusaale: Imtixaanka Jimcaha Suratu Al-Baqarah" class="w-full px-3 py-2 border rounded text-sm">
+                <label class="block text-xs font-semibold mb-1">Cinwaanka Imtixaanka</label>
+                <input type="text" id="newExamTitle" placeholder="Tusaale: Imtixaanka Tafsiirka Suratu Al-Baqarah" class="w-full px-3 py-2 border rounded text-sm">
             </div>
             <div>
                 <label class="block text-xs font-semibold mb-1">Nidaamka Saxida (Grading Type)</label>
                 <select id="newExamGrading" class="w-full px-3 py-2 border rounded text-sm">
-                    <option value="auto">Automatic (Circle / Multiple Choice - Ardaygu arki maayo jawaabta marka uu shaqeynayo)</option>
-                    <option value="manual">Qoraal (In aan anigu gacanta ka saxo jawaabaha ardayga)</option>
+                    <option value="auto">Automatic (Otomaatig u sax su'aalaha Circle-ka ah)</option>
+                    <option value="manual">Manual (Aniga ayaa gacanta ka saxaya)</option>
                 </select>
             </div>
             
             <div class="border-t pt-3">
-                <h4 class="font-bold text-xs mb-2">Su'aalaha Imtixaanka</h4>
-                <div id="addedQuestionsBox" class="space-y-2 mb-3"></div>
+                <h4 class="font-bold text-xs mb-2 text-emerald-900">Su'aalaha Ku Jira Imtixaanka:</h4>
+                <div id="addedQuestionsBox" class="space-y-2 mb-4"></div>
 
-                <div class="bg-gray-50 p-3 border rounded space-y-2">
-                    <input type="text" id="qText" placeholder="Qor su'aasha oo dhameystiran..." class="w-full px-3 py-1.5 border rounded text-xs">
-                    <div class="flex gap-2">
-                        <select id="qType" class="px-2 py-1 border rounded text-xs">
-                            <option value="mcq">Circle / Dooro A,B,C</option>
-                            <option value="essay">Qoraal Banaan</option>
+                <!-- FORM-KA SSU'AAL CUSUB -->
+                <div class="bg-emerald-50 p-4 border border-emerald-200 rounded-xl space-y-3">
+                    <h5 class="font-bold text-xs text-emerald-800">Ku Dar Su'aal Cusub:</h5>
+                    
+                    <div>
+                        <label class="block text-[11px] font-semibold mb-1">Nooca Su'aasha</label>
+                        <select id="qType" onchange="toggleOptionInputs();" class="w-full px-3 py-1.5 border rounded text-xs bg-white">
+                            <option value="mcq">Circle / Dooro 4-ta Option (A, B, C, D)</option>
+                            <option value="essay">Qoraal Banaan (Su'aal Toos Ah)</option>
                         </select>
-                        <input type="text" id="qOptions" placeholder="Option-nada (Kula kala saar comma e.g: A, B, C)" class="w-full px-2 py-1 border rounded text-xs">
-                        <input type="text" id="qCorrect" placeholder="Jawaabta Saxda ah" class="w-full px-2 py-1 border rounded text-xs">
                     </div>
-                    <button type="button" onclick="addQuestionToExam();" class="bg-blue-600 text-white font-bold px-3 py-1 rounded text-xs">+ Ku Dar Su'aasha</button>
+
+                    <div>
+                        <label class="block text-[11px] font-semibold mb-1">Qoraalka Su'aasha</label>
+                        <input type="text" id="qText" placeholder="Qor su'aasha halkan..." class="w-full px-3 py-1.5 border rounded text-xs bg-white">
+                    </div>
+
+                    <!-- AFARTA OPTION (A, B, C, D) -->
+                    <div id="mcqOptionsBox" class="grid grid-cols-1 md:grid-cols-2 gap-2 pt-2">
+                        <div>
+                            <label class="block text-[10px] text-gray-600">Option A:</label>
+                            <input type="text" id="optA" placeholder="Jawaabta A" class="w-full px-2 py-1 border rounded text-xs bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-gray-600">Option B:</label>
+                            <input type="text" id="optB" placeholder="Jawaabta B" class="w-full px-2 py-1 border rounded text-xs bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-gray-600">Option C:</label>
+                            <input type="text" id="optC" placeholder="Jawaabta C" class="w-full px-2 py-1 border rounded text-xs bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-gray-600">Option D:</label>
+                            <input type="text" id="optD" placeholder="Jawaabta D" class="w-full px-2 py-1 border rounded text-xs bg-white">
+                        </div>
+                    </div>
+
+                    <!-- JAWAABTA SAXDA AH -->
+                    <div id="correctAnswerBox" class="pt-2">
+                        <label class="block text-[11px] font-bold text-emerald-900 mb-1">Kiama Jawbaabta Saxda ah?</label>
+                        <input type="text" id="qCorrect" placeholder="Geli qoraalka jawaabta saxda ah si toos ah" class="w-full px-3 py-1.5 border rounded text-xs bg-white">
+                    </div>
+
+                    <button type="button" onclick="addQuestionToExam();" class="w-full bg-blue-600 text-white font-bold py-2 rounded text-xs hover:bg-blue-700 shadow">
+                        + Ku Dar Su'aashan Imtixaanka
+                    </button>
                 </div>
             </div>
 
-            <button onclick="publishExam();" class="w-full bg-emerald-800 text-white font-bold py-2 rounded text-sm shadow">Fasax / Fur Imtixaanka</button>
+            <button onclick="publishExam();" class="w-full bg-emerald-800 text-white font-bold py-3 rounded-lg shadow hover:bg-emerald-900 transition">
+                🚀 Fasax / Fur Imtixaanka Ardayda
+            </button>
         </div>
 
-        <!-- TAB 3: SAX IMTIXAANKA (GRADE PENDING EXAMS) -->
+        <!-- TAB 3: NATIIJOOYINKA -->
         <div id="gradeExamTab" class="tab-box hidden bg-white p-6 rounded-xl shadow border">
-            <h3 class="font-bold text-emerald-900 mb-4 border-b pb-2">Imtixanaadka Yaalo oo Saxid U Baahan</h3>
+            <h3 class="font-bold text-emerald-900 mb-4 border-b pb-2">Imtixanaadka Ardaydu Dhiibteen</h3>
             <div id="pendingExamsList" class="space-y-3 text-xs"></div>
         </div>
 
-        <!-- TAB 4: EXTERNAL EXAM & COLORS -->
+        <!-- TAB 4: SETTINGS -->
         <div id="settingsTab" class="tab-box hidden bg-white p-6 rounded-xl shadow border space-y-4">
-            <h3 class="font-bold text-emerald-900 border-b pb-2">Badalida Midabada & Qeybta Link/PDF/Excel</h3>
-            
+            <h3 class="font-bold text-emerald-900 border-b pb-2">Badalida Midabada & Qeybta Link/PDF</h3>
             <div>
                 <label class="block text-xs font-semibold mb-1">Midabka Website-ka</label>
                 <select id="colorSelect" class="w-full px-3 py-1.5 border rounded text-xs">
-                    <option value="emerald">Cagaar (Emerald - Default)</option>
-                    <option value="blue">Blue (Kbuluug)</option>
-                    <option value="purple">Purple (Sogal)</option>
+                    <option value="emerald">Cagaar (Emerald)</option>
+                    <option value="blue">Buluug (Blue)</option>
+                    <option value="purple">Sogal (Purple)</option>
                 </select>
             </div>
-
             <div>
                 <label class="block text-xs font-semibold mb-1">Warbixinta Bogga Hore (Description)</label>
                 <textarea id="descInput" rows="2" class="w-full px-3 py-1.5 border rounded text-xs" placeholder="Qor warbixin cusub..."></textarea>
             </div>
-
-            <div class="border-t pt-3">
-                <h4 class="font-bold text-xs mb-2">Soo Galinta Imtixaan External ah (Link / PDF / Excel)</h4>
-                <input type="url" placeholder="Geli Link-ga Imtixaanka Google Form / PDF / Link" class="w-full px-3 py-1.5 border rounded text-xs mb-2">
-                <p class="text-[10px] text-gray-500">Waad ku dari kartaa link-ga imtixaanka banaanka laga soo galiyo si ardaydu toos ugu fariistaan.</p>
-            </div>
-
             <button onclick="saveSiteSettings();" class="bg-emerald-800 text-white font-bold text-xs px-4 py-2 rounded">Kaydi Baddalida</button>
         </div>
 
@@ -135,6 +163,7 @@
                 document.getElementById('adminLoginSection').classList.add('hidden');
                 document.getElementById('adminPanel').classList.remove('hidden');
                 loadStudentsTable();
+                loadSubmissions();
             } else {
                 alert("Username ama Password xaqiijin la'aan!");
             }
@@ -150,25 +179,68 @@
             const tbody = document.getElementById('studentTableBody');
             tbody.innerHTML = '';
             students.forEach(s => {
-                tbody.innerHTML += `<tr><td class="p-2 border font-bold">${s.code}</td><td class="p-2 border">${s.name}</td><td class="p-2 border">${s.phone}</td><td class="p-2 border">${s.gender}</td></tr>`;
+                tbody.innerHTML += `<tr><td class="p-2 border font-bold text-emerald-800">${s.code}</td><td class="p-2 border">${s.name}</td><td class="p-2 border">${s.phone}</td><td class="p-2 border">${s.gender}</td></tr>`;
             });
+        }
+
+        function toggleOptionInputs() {
+            const type = document.getElementById('qType').value;
+            if(type === 'mcq') {
+                document.getElementById('mcqOptionsBox').classList.remove('hidden');
+            } else {
+                document.getElementById('mcqOptionsBox').classList.add('hidden');
+            }
         }
 
         let currentQuestions = [];
         function addQuestionToExam() {
-            const text = document.getElementById('qText').value;
+            const text = document.getElementById('qText').value.trim();
             const type = document.getElementById('qType').value;
-            const options = document.getElementById('qOptions').value.split(',').map(s=>s.trim());
-            const correct = document.getElementById('qCorrect').value;
+            const correct = document.getElementById('qCorrect').value.trim();
+
+            if(!text) return alert("Fadlan qor su'aasha!");
+
+            let options = [];
+            if(type === 'mcq') {
+                const a = document.getElementById('optA').value.trim();
+                const b = document.getElementById('optB').value.trim();
+                const c = document.getElementById('optC').value.trim();
+                const d = document.getElementById('optD').value.trim();
+
+                if(!a || !b || !c || !d) {
+                    return alert("Fadlan buuxi dhammaan 4-ta Option (A, B, C, D)!");
+                }
+                options = [a, b, c, d];
+            }
 
             currentQuestions.push({ text, type, options, correct });
-            document.getElementById('addedQuestionsBox').innerHTML += `<p class="text-xs bg-gray-100 p-1 rounded border">✔ ${text}</p>`;
+
+            // Muuji su'aaha la add-gareeyay
+            const box = document.getElementById('addedQuestionsBox');
+            box.innerHTML += `
+                <div class="p-2 bg-gray-50 border rounded text-xs space-y-1">
+                    <p class="font-bold text-emerald-900">${currentQuestions.length}. ${text}</p>
+                    ${type === 'mcq' ? `<p class="text-gray-500">Options: A: ${options[0]} | B: ${options[1]} | C: ${options[2]} | D: ${options[3]}</p>` : '<p class="text-gray-500">Nooca: Qoraal Banaan</p>'}
+                    <p class="text-green-700 font-semibold">Jawaabta Saxda ah: ${correct}</p>
+                </div>
+            `;
+
+            // Reset inputs
             document.getElementById('qText').value = '';
+            document.getElementById('optA').value = '';
+            document.getElementById('optB').value = '';
+            document.getElementById('optC').value = '';
+            document.getElementById('optD').value = '';
+            document.getElementById('qCorrect').value = '';
         }
 
         function publishExam() {
-            const title = document.getElementById('newExamTitle').value;
+            const title = document.getElementById('newExamTitle').value.trim();
             const gradingType = document.getElementById('newExamGrading').value;
+
+            if(!title || currentQuestions.length === 0) {
+                return alert("Fadlan qor cinwaanka imtixaanka oo ku dar ugu dambeyn 1 su'aal!");
+            }
 
             const examData = {
                 title,
@@ -178,7 +250,32 @@
             };
 
             localStorage.setItem('activeExam', JSON.stringify(examData));
-            alert("Imtixaanka cusub waa la fasaxay oo wuu furan yahay!");
+            alert("🎉 Imtixaanka cusub si guul leh ayaa loo fasaxay oo uu furan yahay!");
+            currentQuestions = [];
+            document.getElementById('addedQuestionsBox').innerHTML = '';
+            document.getElementById('newExamTitle').value = '';
+        }
+
+        function loadSubmissions() {
+            const submissions = JSON.parse(localStorage.getItem('examSubmissions') || '[]');
+            const list = document.getElementById('pendingExamsList');
+            if(submissions.length === 0) {
+                list.innerHTML = `<p class="text-gray-500">Weli ma jiro arday imtixaan dhiibay.</p>`;
+                return;
+            }
+
+            list.innerHTML = '';
+            submissions.forEach((s, idx) => {
+                list.innerHTML += `
+                    <div class="p-3 bg-gray-50 border rounded-lg space-y-1">
+                        <div class="flex justify-between items-center">
+                            <strong class="text-emerald-900">Student Code: ${s.code}</strong>
+                            <span class="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded text-[10px]">${s.status}</span>
+                        </div>
+                        <p class="text-gray-600">Natiijada Otomaatiga ah: <strong>${s.autoScore} / ${s.totalQuestions}</strong></p>
+                    </div>
+                `;
+            });
         }
 
         function saveSiteSettings() {
